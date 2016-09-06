@@ -1,0 +1,30 @@
+{
+    "name": "nordcode/robo-bump",
+    "description": "Version bump task for robo task runner",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Henning Kasch",
+            "email": "henning.kasch@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "NordCode\\RoboBump\\" : "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NordCode\\RoboBump\\Test\\" : "test"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=4.8",
+        "squizlabs/php_codesniffer": ">=2.3.3",
+        "satooshi/php-coveralls": "^1.0"
+    },
+    "require": {
+        "codegyre/robo": ">=0.5|~1.0@rc",
+        "mikey179/vfsStream": "^1.6"
+    }
+}
