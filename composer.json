@@ -21,10 +21,10 @@
     "require-dev": {
         "phpunit/phpunit": ">=4.8",
         "squizlabs/php_codesniffer": ">=2.3.3",
-        "satooshi/php-coveralls": "^1.0"
+        "satooshi/php-coveralls": "^1.0",
+        "mikey179/vfsStream": "^1.6"
     },
     "require": {
-        "codegyre/robo": ">=0.5|~1.0@rc",
-        "mikey179/vfsStream": "^1.6"
+        "codegyre/robo": ">=0.5|~1.0@rc"
     }
 }
