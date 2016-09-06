@@ -5,7 +5,7 @@ namespace NordCode\RoboBump\Task;
 use NordCode\RoboBump\Version;
 use Robo\Common\DynamicParams;
 use Robo\Task\BaseTask;
-use Robo\Task\Docker\Result;
+use Robo\Result;
 
 /**
  * @method $this files(array|string $files)
@@ -119,8 +119,9 @@ class Bump extends BaseTask
         $files = array_unique($this->files);
 
         foreach ($files as $file) {
-            if (!$this->bumpVersionInFile($file)) {
-                return Result::error($this, 'Something went wrong when replacing the version in ' . $file);
+            $result = $this->bumpVersionInFile($file);
+            if ($result instanceof Result) {
+                return $result;
             }
         }
         return Result::success($this);
@@ -134,20 +135,23 @@ class Bump extends BaseTask
     {
         $content = @file_get_contents($file);
         if ($content === false) {
-            return false;
+            return Result::error($this, 'Cannot open file ' . $file);
         }
 
-        if (empty($this->context)) {
-            $content = $this->bumpVersionInString($content);
-        } else {
-            // loop over each context, find the context in the file and replace the version in the context
-            // with the new version
-            foreach ($this->context as $context) {
-                $content = preg_replace_callback($context, function ($matches) {
-                    return $this->bumpVersionInString($matches[0]);
-                }, $content);
-            }
+        // fall back to some default contexts if nothing was set
+        $contexts = $this->context;
+        if (empty($contexts)) {
+            $contexts = [self::CONTEXT_BLOCK_COMMENT, self::CONTEXT_LINE_COMMENT, self::CONTEXT_PROPERTY];
         }
+
+        // loop over each context, find the context in the file and replace the version in the context
+        // with the new version
+        foreach ($contexts as $context) {
+            $content = preg_replace_callback($context, function ($matches) {
+                return $this->bumpVersionInString($matches[0]);
+            }, $content);
+        }
+
 
         return file_put_contents($file, $content) !== false;
     }

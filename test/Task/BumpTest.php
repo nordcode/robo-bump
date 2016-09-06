@@ -90,6 +90,39 @@ FILE
     /**
      * @test
      */
+    public function bumpsInAllContextsByDefault()
+    {
+        $this->file->setContent(<<<FILE
+/**
+ * Library v1.0.0
+ * Copyright 2011-2016 Acme Inc 
+ */
+// v1.0.0
+return [
+    'version' => '1.0.0',
+    'something_else' => '1.0.0'
+];
+FILE
+        );
+        $this->fixture->to('1.2.3')->run();
+
+        $this->assertEquals(<<<FILE
+/**
+ * Library v1.2.3
+ * Copyright 2011-2016 Acme Inc 
+ */
+// v1.2.3
+return [
+    'version' => '1.2.3',
+    'something_else' => '1.0.0'
+];
+FILE
+            , $this->file->getContent());
+    }
+    
+    /**
+     * @test
+     */
     public function bumpsInBlockCommentContext()
     {
         $this->file->setContent(<<<FILE
